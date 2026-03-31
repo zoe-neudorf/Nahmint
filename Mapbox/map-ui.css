@@ -44,6 +44,74 @@
   --ui-transition:      0.15s ease;
 }
 
+/*Welcome card 
+/* Center overlay container */
+#welcome-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.55);
+  z-index: 20;
+}
+
+/* Card sizing */
+.welcome-card {
+  width: 420px;
+  max-width: 90%;
+}
+
+/* Body text */
+.welcome-text {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ui-text);
+  margin-bottom: 14px;
+}
+
+/* CTA button */
+.welcome-btn {
+  width: 100%;
+  padding: 8px 10px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+
+  background: var(--accent-blue);
+  color: #000;
+
+  border: none;
+  border-radius: var(--ui-border-radius-sm);
+  cursor: pointer;
+
+  transition: opacity var(--ui-transition);
+}
+
+.welcome-btn:hover {
+  opacity: 0.85;
+}
+.welcome-footer-row {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 8px;
+}
+
+.dont-show {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--ui-text-muted);
+  font-family: var(--font-sans);
+  cursor: pointer;
+}
+
+.dont-show input {
+  cursor: pointer;
+}
+
 
 /* -----------------------------------------------------------------------------
    SHARED CARD / PANEL BASE

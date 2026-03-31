@@ -11,6 +11,7 @@
 	body { margin: 0; padding: 0; }
 	#map { position: absolute; top: 0; bottom: 0; width: 100%; }
 
+	
 		/* Welcome card — position top-right */
 		#map-welcome-card {
 			position: absolute;
@@ -151,6 +152,52 @@
 <body>
 <div id="map"></div>
 
+//Welcome card with background information
+<div id="welcome-overlay" class="ui-fade-in">
+  <div class="map-card welcome-card">
+
+    <!-- Header -->
+    <div class="map-card-header">
+      <div class="map-card-title">About This Map</div>
+      <button class="map-close-btn" id="welcome-close">×</button>
+    </div>
+
+    <!-- Body -->
+    <div class="map-card-body">
+
+      <div class="map-section-label">Overview</div>
+      <p class="welcome-text">
+        This interactive map shows proposed and historical logging activity
+        in the Nahmint watershed. The Nahmint valley has some of the largest tracks of remaining unprotected old growth forest on Vancouver Island.
+		In 1990 this was recognized and the area was designated a special management zone to protect local biodivserity.
+		However, in 2019 an investigation was undertaken by the Ministry that found BCTS was failing to comply with old-groth protection standards and that too much old growth had already been logged in the Nahmint. 
+		Today, blocks continue to be put up for auction in the Nahmint. For more information on the Nahmint please visit the
+		<a href="https://ancientforestalliance.org/our-work/old-growth-campaigns/nahmint-valley/
+" target="_blank" rel="noopener noreferrer">
+    Ancient Forest Alliance website
+  </a>.
+	  </p>
+
+      <div class="map-section-label">Included Layers</div>
+	  <p class ="welcome-text">
+		Red polygons indicate areas where logging is proposed to take place. 
+		Green polygons are areas that the Technical Advirosy Panel (TAP) has identified as Priority Deferral areas. 
+		Pink polygons have been created to highlight areas where proposed cutblocks are placed in TAP Priority Deferral areas. 
+		Areas that have been previously harveseted are shown in yellow. 
+		The yellow previously logged layer shows polygons from the Consolidated Cutblocks dataset, which is a combination of cutblocks from the BC government’s Harvested Areas dataset and cutblocks from BCTS.
+		VRI data shows stands under 100 years of age, most of which would have been logged.
+		Critical Habitat for federally listed species at risk is identified in blue.
+	  </p>
+
+    </div>
+
+  <button id="welcome-start" class="welcome-btn">Enter Map</button>
+</div>
+
+
+  </div>
+</div>
+
 <!-- ── Layer Legend ── -->
 <div id="legend">
 	<h4>Map Layers</h4>
@@ -186,7 +233,7 @@
 		<span class="legend-swatch" style="background:yellow;"></span>
 		<span class="legend-label">VRI &lt;100 Years</span>
 		<label class="toggle">
-			<input type="checkbox" unchecked>
+			<input type="checkbox" checked>
 			<span class="slider"></span>
 		</label>
 	</div>
@@ -208,6 +255,8 @@
 			<span class="slider"></span>
 		</label>
 </div>
+
+
 
 <script>
 	mapboxgl.accessToken = 'pk.eyJ1IjoiemVkc21hcHMiLCJhIjoiY21tNWpscW43MDdoZDJvb21ycWhxNnpiMyJ9.ocRY4_UqGhJ1bgDNbYDKAQ';
@@ -265,7 +314,7 @@
 			paint: { 
 				'fill-color': 'yellow', 
 				'fill-opacity': 0.5 },
-			layout: { 'visibility': 'none' }
+			layout: { 'visibility': 'visible' }
 		});
 
 		map.addLayer({
@@ -276,7 +325,7 @@
 				'line-color': 'yellow', 
 				'line-width': 1.2, 
 				'line-opacity': 0.9 },
-			layout: { 'visibility': 'none' }
+			layout: { 'visibility': 'visible' }
 		});
 
 		map.addLayer({
@@ -594,8 +643,6 @@
 				'fill-opacity': 0.8
 			}
 		});
-
-
 
 		// ── Wire up legend toggles ──
 		// Runs after all layers are added so setLayoutProperty will find each layer
@@ -1596,14 +1643,12 @@
 			layout: {},
 			paint: { 'line-color': 'white', 'line-width': 1.5 }
 		});
-	}); // end load
+	}); 
 
-			// =============================================================================
+		// =============================================================================
 		// WELCOME CARD — MAP INSTRUCTIONS
 		// -----------------------------------------------------------------------------
-
 		// Call renderWelcomeCard on page load
-		// Remove this if-block during development to always show the card
 		if (localStorage.getItem('fom-welcome-dismissed') === 'true') {
 			// User opted out — don't show the card
 		} else {
@@ -1662,13 +1707,10 @@
 				</div><!-- end .map-card-body -->
 			`;
 
-			document.getElementById('map').appendChild(card);
+			document.getElementById('map').appendChild(card);				
 
 			// -------------------------------------------------------------------------
 			// MINIMIZE / EXPAND HANDLER
-			// -------------------------------------------------------------------------
-			// IMPORTANT: use card.querySelector() not document.getElementById() —
-			// these elements only exist inside the card, which is now in the DOM above.
 			// -------------------------------------------------------------------------
 			let isMinimized = false;
 			const minimizeBtn = card.querySelector('#wc-minimize-btn');
@@ -1683,9 +1725,35 @@
 			}
 
 			header.addEventListener('click', toggleMinimize);
-
 		} // end renderWelcomeCard()
 
+
+		//welcome card button interactions
+		document.addEventListener('DOMContentLoaded',()=>{
+			const overlay = document.getElementById('welcome-overlay');
+			const closeBtn = document.getElementById('welcome-close');
+			const startBtn = document.getElementById('welcome-start');
+			const dontShowCheckbox = document.getElementById('dont-show-again');
+
+			function closeWelcome() {
+			if (dontShowCheckbox?.checked) {
+				sessionStorage.setItem('hideWelcome', 'true');
+			}
+
+			overlay.classList.remove('ui-fade-in');
+			overlay.classList.add('ui-fade-out');
+
+			setTimeout(() => {
+				overlay.style.display = 'none';
+			}, 250);
+			}
+
+			closeBtn.addEventListener('click', closeWelcome);
+			startBtn.addEventListener('click', closeWelcome);
+
+			if (sessionStorage.getItem('hideWelcome') === 'true') {overlay.style.display = 'none'
+			}
+		});
 
 </script>
 </body>
