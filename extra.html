@@ -1,0 +1,221 @@
+		// -----------------------------------------------------------------------------
+		// FOM CUTBLOCKS — WFS REQUEST URL
+		// // -----------------------------------------------------------------------------
+		// 	const WFS_URL =
+		// 		'https://openmaps.gov.bc.ca/geo/ows?' +
+		// 		'SERVICE=WFS' +
+		// 		'&VERSION=2.0.0' +
+		// 		'&REQUEST=GetFeature' +
+		// 		'&TYPENAMES=pub:WHSE_FOREST_TENURE.FOM_CUTBLOCK_SP' +
+		// 		'&OUTPUTFORMAT=application/json' +
+		// 		'&SRSNAME=EPSG:4326';
+
+
+		// 	// Bounding box filter — limits features to the area of interest
+		// 	// Format: &BBOX=minLng,minLat,maxLng,maxLat,EPSG:4326
+		// 	(async () => {
+		// 		let geojson;
+		// 		try {
+		// 		const response = await fetch(WFS_URL);
+		// 		if (!response.ok) throw new Error(`WFS request failed — HTTP ${response.status}`);
+		// 		geojson = await response.json();
+		// 		console.log(`FOM Cutblocks loaded: ${geojson.features?.length ?? 0} features`);
+		// 		} catch (err) {
+		// 		console.error('Could not load FOM Cutblocks from BC WFS:', err);
+		// 		return;
+		// 		}
+
+		// 		// Filter to only features that intersect the Nahmint polygon
+		// 		const clipped = {
+		// 		...geojson,
+		// 		features: geojson.features.filter(f =>
+		// 			turf.booleanIntersects(f, nahmintPolygon)
+		// 			)
+		// 		};
+		// 		console.log(`Cutblocks within Nahmint: ${clipped.features.length}`);
+
+		// 		map.addSource('fom-cutblocks', {
+		// 		type: 'geojson',
+		// 		data: clipped,        // <-- only features inside the boundary
+		// 		generateId: true
+		// 		});
+
+		// 		// Fill layer — semi-transparent polygon interior
+		// 		map.addLayer({
+		// 			id: 'cutblocks-fill',
+		// 			type: 'fill',
+		// 			source: 'fom-cutblocks',
+		// 			paint: {
+		// 				'fill-color': 'red',
+		// 				'fill-opacity': 0.35
+		// 			}
+		// 		});
+
+		// 		// Outline layer — polygon border
+		// 		map.addLayer({
+		// 			id: 'cutblocks-outline',
+		// 			type: 'line',
+		// 			source: 'fom-cutblocks',
+		// 			paint: {
+		// 				'line-color': 'red',
+		// 				'line-width': 1.2,
+		// 				'line-opacity': 0.9
+		// 			}
+		// 		});
+
+		// 	map.addLayer({
+		// 			id: 'cutblocks-hover',
+		// 			type: 'fill',
+		// 			source: 'fom-cutblocks',
+		// 			paint: {
+		// 				'fill-color': '#ffffff',
+		// 				'fill-opacity': [
+		// 					'case',
+		// 					['boolean', ['feature-state', 'hover'], false],
+		// 					0.15,   // opacity when hovered
+		// 					0       // opacity when not hovered
+		// 				]
+		// 			}
+		// 		});
+
+		// 		// Track which feature is currently hovered
+		// 		let hoveredFomId = null;
+
+		// 		map.on('mousemove', 'cutblocks-fill', (e) => {
+		// 			map.getCanvas().style.cursor = 'pointer';
+		// 			if (e.features.length > 0) {
+		// 				if (hoveredFomId !== null) {
+		// 					map.setFeatureState({ source: 'fom-cutblocks', id: hoveredFomId }, { hover: false });
+		// 				}
+		// 				hoveredFomId = e.features[0].id;
+		// 				map.setFeatureState({ source: 'fom-cutblocks', id: hoveredFomId }, { hover: true });
+		// 			}
+		// 		});
+
+		// 		map.on('mouseleave', 'cutblocks-fill', () => {
+		// 			map.getCanvas().style.cursor = '';
+		// 			if (hoveredFomId !== null) {
+		// 				map.setFeatureState({ source: 'fom-cutblocks', id: hoveredFomId }, { hover: false });
+		// 			}
+		// 			hoveredFomId = null;
+		// 		});
+
+		// 		// Click popup — reuse a single instance, move it on each click
+		// 		// All popup styles come from map-ui.css
+		// 		const popup = new mapboxgl.Popup({ closeButton: true, maxWidth: '450px' });
+
+		// 		map.on('click', 'cutblocks-fill', (e) => {
+		// 			const props = e.features[0].properties;
+
+		// 			// Returns a table row or empty string if the value is missing
+		// 			const row = (label, key) => {
+		// 				const val = props[key];
+		// 				if (val == null || val === '' || val === 'null') return '';
+		// 				return `<tr>
+		// 							<td class="popup-label" style="padding:3px 8px 3px 0">${label}</td>
+		// 							<td class="popup-value" style="padding:3px 0">${val}</td>
+		// 						</tr>`;
+		// 			};
+
+		// 			const html = `
+		// 				<div class="popup-header">
+		// 					<span class="popup-header-title">Cutblock Detail</span>
+		// 				</div>
+		// 				<div class="popup-body">
+		// 					<table style="border-collapse:collapse;width:100%;font-size:11px;font-family:var(--font-mono)">
+		// 						${row('NAME',                       'NAME')}
+		// 						${row('DATE OF SUBMISSION',         'CREATE_DATE')}
+		// 						${row('CUT BLOCK ID',               'CUT_BLOCK_ID')}
+		// 						${row('PLANNED HARVEST AREA (HA)',   'PLANNED_AREA')}
+		// 						${row('FSP HOLDER NAME',             'FSP_HOLDER_NAME')}
+		// 						${row('BLOCK STATUS',               'LIFECYCLE_STATUS')}
+		// 						${row('PLANNED HARVEST DATE',       'PLANNED_DEVELOPMENT_DATE')}
+		// 					</table>
+		// 				</div>
+		// 			`;
+
+		// 			popup.setLngLat(e.lngLat).setHTML(html).addTo(map);
+		// 		});
+
+		// 	})(); // end FOM cutblocks async block
+
+
+
+
+
+        		// // ── Consolidated Cutblocks ──
+		// map.addSource('consolidated_cutblocks', {
+		// 	type: 'geojson',
+		// 	data: 'Mapbox/Consolidated_Cutblocks.geojson',
+		// 	generateId: true
+		// });
+
+		// map.addLayer({
+		// 	id: 'consolidated_cutblocks-fill',
+		// 	type: 'fill',
+		// 	source: 'consolidated_cutblocks',
+		// 	paint: { 'fill-color': 'yellow', 'fill-opacity': 0.35 }
+		// });
+
+		// map.addLayer({
+		// 	id: 'consolidated-cutblocks-outline',
+		// 	type: 'line',
+		// 	source: 'consolidated_cutblocks',
+		// 	paint: { 'line-color': 'yellow', 'line-width': 1.0, 'line-opacity': 0.7 }
+		// });
+
+		// map.addLayer({
+		// 	id: 'consolidated-cutblocks-hover',
+		// 	type: 'fill',
+		// 	source: 'consolidated_cutblocks',
+		// 	paint: {
+		// 		'fill-color': 'yellow',
+		// 		'fill-opacity': [
+		// 			'case', ['boolean', ['feature-state', 'hover'], false], 0.15, 0
+		// 		]
+		// 	}
+		// });
+
+		// let hoveredId = null;
+
+		// map.on('mousemove', 'consolidated_cutblocks-fill', (e) => {
+		// 	map.getCanvas().style.cursor = 'pointer';
+		// 	if (e.features.length > 0) {
+		// 		if (hoveredId !== null) {
+		// 			map.setFeatureState({ source: 'consolidated_cutblocks', id: hoveredId }, { hover: false });
+		// 		}
+		// 		hoveredId = e.features[0].id;
+		// 		map.setFeatureState({ source: 'consolidated_cutblocks', id: hoveredId }, { hover: true });
+		// 	}
+		// });
+
+		// map.on('mouseleave', 'consolidated_cutblocks-fill', () => {
+		// 	map.getCanvas().style.cursor = '';
+		// 	if (hoveredId !== null) {
+		// 		map.setFeatureState({ source: 'consolidated_cutblocks', id: hoveredId }, { hover: false });
+		// 	}
+		// 	hoveredId = null;
+		// });
+
+		// const popup = new mapboxgl.Popup({ closeButton: true, maxWidth: '450px' });
+
+		// map.on('click', 'consolidated_cutblocks-fill', (e) => {
+		// 	const props = e.features[0].properties;
+		// 	const row = (label, key) => {
+		// 		const val = props[key];
+		// 		if (val == null || val === '' || val === 'null') return '';
+		// 		return `<tr>
+		// 					<td class="popup-label" style="padding:3px 8px 3px 0">${label}</td>
+		// 					<td class="popup-value" style="padding:3px 0">${val}</td>
+		// 				</tr>`;
+		// 	};
+		// 	const html = `
+		// 		<div class="popup-header"><span class="popup-header-title">Cutblock Detail</span></div>
+		// 		<div class="popup-body">
+		// 			<table style="border-collapse:collapse;width:100%;font-size:11px;font-family:var(--font-mono)">
+		// 				${row('HARVEST DATE', 'HARVEST_START_DATE')}
+		// 				${row('AREA (HA)', 'AREA_HA')}
+		// 			</table>
+		// 		</div>`;
+		// 	popup.setLngLat(e.lngLat).setHTML(html).addTo(map);
+		// });
